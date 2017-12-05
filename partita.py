@@ -30,3 +30,7 @@ class Partita:
       return -1
     else:
       return 0
+
+  def __str__(self):
+    string = self.casa + " - " + self.ospite + " = " + str(self.gol_casa) + " - " + str(self.gol_ospite)
+    return string

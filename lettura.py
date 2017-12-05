@@ -32,7 +32,7 @@ def open_file(path):
     if isinstance(x,float):
       x = int(x)
     print(x,end=" - ")
-
+    #print("aaa- " + str(first_sheet.row_values(i)))
     print(xlrd.xldate_as_tuple(first_sheet.cell(i,2).value, 0), end=" - ")
     print(first_sheet.cell(i,3).value,end=" - ")
     print(first_sheet.cell(i,4).value,end=" - ")
@@ -58,3 +58,10 @@ def open_file(path):
 if __name__ == "__main__":
   path = "partite.xlsx"
   open_file(path)
+
+#
+# for row...:
+#   riga = 11*[None]
+#   for colonna...:
+#     riga[colonna] = sheet.cell(row,colonna).value
+#   dati.insert_riga(riga)
