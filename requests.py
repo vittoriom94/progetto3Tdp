@@ -1,3 +1,4 @@
+from Heapify import Heapify
 from TdP_collections.hash_table.probe_hash_map import ProbeHashMap
 
 
@@ -109,10 +110,13 @@ class Richieste:
           partita = giornata.partite[squadra]
           if squadra not in classifica_no:
             classifica_no[squadra] = 0
-          classifica_no[squadra]+= partita.gol_casa if squadra == partita.casa else partita.gol_ospite
+          classifica_no[squadra]-= partita.gol_casa if squadra == partita.casa else partita.gol_ospite
 
-    classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item], reverse=True)  # sorted = O(nlogn)
-
+    #classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item], reverse=True)  # sorted = O(nlogn)
+    h = Heapify(classifica_no)
+    classifica_o = list()
+    for i in range(1, n):
+      classifica_o.append(h.remove_min()._value)
     return classifica_o[0:n]
 
   def richiesta_sette(self, g, n):
@@ -130,8 +134,12 @@ class Richieste:
             classifica_no[squadra] = 0
           classifica_no[squadra] += partita.gol_ospite if squadra == partita.casa else partita.gol_casa
 
-    classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item])  # sorted = O(nlogn)
+    #classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item])  # sorted = O(nlogn)
 
+    h = Heapify(classifica_no) #O n
+    classifica_o = list()
+    for i in range(1, n): #O klogn  k sarebbe n
+      classifica_o.append(h.remove_min()._value)
     return classifica_o[0:n]
 
   def richiesta_otto(self, g, n):
@@ -148,10 +156,14 @@ class Richieste:
           if squadra not in classifica_no:
             classifica_no[squadra] = 0
           diff = partita.gol_casa - partita.gol_ospite
-          classifica_no[squadra] += diff if squadra == partita.casa else -diff
+          classifica_no[squadra] -= diff if squadra == partita.casa else -diff
 
-    classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item], reverse=True)  # sorted = O(nlogn)
+    #classifica_o = sorted(classifica_no, key=lambda item: classifica_no[item], reverse=True)  # sorted = O(nlogn)
 
+    h = Heapify(classifica_no)
+    classifica_o = list()
+    for i in range(1, n):
+      classifica_o.append(h.remove_min()._value)
     return classifica_o[0:n]
 
   ### Gestire parimerito?
