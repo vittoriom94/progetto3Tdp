@@ -26,6 +26,19 @@ if __name__ == "__main__":
 
   r = Richieste(dati)
 
+  print("Esercizio uno")
+  c = input("inserisci campionato: ")
+  l = r.richiesta_uno(str(c))
+  print(list(l))
+  #
+  # print("Esercizio due")
+  # g = input("inserisci giornata: ")
+  # c = input("inserisci campionato: ")
+  # classifica,avversari = r.richiesta_due(int(g), str(c))
+  # print(str(classifica))
+  # print(list(avversari))
+  # print(list(avversari.values()))
+  #
   # print("Esercizio tre")
   # g = input("inserisci giornata: ")
   # c = input("inserisci campionato: ")
@@ -61,11 +74,11 @@ if __name__ == "__main__":
   # print(risultato)
 
 
-  print("Esercizio otto")
-  g = input("inserisci giornata: ")
-  n = input("inserisci n: ")
-  risultato = r.richiesta_sei(int(g), int(n))
-  print(risultato)
+  # print("Esercizio otto")
+  # g = input("inserisci giornata: ")
+  # n = input("inserisci n: ")
+  # risultato = r.richiesta_sei(int(g), int(n))
+  # print(risultato)
 
   # print("Esercizio nove")
   # g = input("inserisci giornata: ")

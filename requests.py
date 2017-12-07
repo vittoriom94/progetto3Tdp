@@ -7,6 +7,39 @@ class Richieste:
     self.dati = dati
 
 
+  def richiesta_uno(self, c):
+    return self.dati.campionati[c].giornate[1].partite.keys()
+
+
+  def richiesta_due(self,g, c):
+    if g <1:
+      raise Exception("Giornata inferiore a 1")
+    campionato = self.dati.campionati[c]
+    classifica_no = ProbeHashMap()
+    avversari = ProbeHashMap()
+    try:
+      data_finale = campionato.giornate[g].data_fine
+    except KeyError:
+      data_finale = (2017,12,31,0,0,0)
+    for i in range(1,g+1):
+      if i not in campionato.giornate:
+        break
+      giornata = campionato.giornate[i]
+      for squadra in giornata.partite:
+        partita = giornata.partite[squadra]
+        #aggiorna classifica
+        if partita.data <= data_finale:    #se la partita è rinviata a dopo la giornata indicata allora non viene contata
+          if squadra not in classifica_no:
+            classifica_no[squadra] = 0
+          classifica_no[squadra] = classifica_no[squadra] + self._checkrisultato_pt_n(squadra, partita)
+          #aggiorna avversari
+          if squadra not in avversari:
+            avversari[squadra] = 0
+          avversari[squadra]+=1
+      print(list(classifica_no))
+    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1],reverse=True) #sorted = O(nlogn)
+    return classifica_o,avversari
+
   def richiesta_tre(self,g, c):
     if g <1:
       raise Exception("Giornata inferiore a 1")
@@ -33,8 +66,21 @@ class Richieste:
             avversari[squadra] = 0
           avversari[squadra]+=1
       print(list(classifica_no))
-    classifica_o = sorted(classifica_no, key=lambda item : classifica_no[item],reverse=True) #sorted = O(nlogn)
+    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1],reverse=True) #sorted = O(nlogn)
     return classifica_o,avversari
+
+  def _checkrisultato_n(self,squadra, partita):
+    if squadra == partita.casa:
+      if partita.risultato_finale() == "H":
+        return 3
+      elif partita.risultato_finale() == "A":
+        return 0
+    if squadra == partita.ospite:
+      if partita.risultato_finale() == "H":
+        return 0
+      elif partita.risultato_finale() == "A":
+        return 3
+    return 1
 
   def _checkrisultato_pt_n(self,squadra, partita):
     if squadra == partita.casa:
