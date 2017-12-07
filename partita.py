@@ -15,22 +15,22 @@ class Partita:
     """1 se ha vinto casa, -1 se ha vinto ospite, 0 pareggio"""
     diff = self.gol_casa - self.gol_ospite
     if diff > 0:
-      return 1
+      return "H"
     elif diff < 0:
-      return -1
+      return "A"
     else:
-      return 0
+      return "D"
 
   def risultato_primo_tempo(self):
     """1 se ha vinto casa, -1 se ha vinto ospite, 0 pareggio"""
     diff = self.gol_casa_primotempo - self.gol_ospite_primotempo
     if diff > 0:
-      return 1
+      return "H"
     elif diff < 0:
-      return -1
+      return "A"
     else:
-      return 0
+      return "D"
 
   def __str__(self):
-    string = self.casa + " - " + self.ospite + " = " + str(self.gol_casa) + " - " + str(self.gol_ospite)
+    string = self.casa + " - " + self.ospite + " = " + str(self.gol_casa) + " - " + str(self.gol_ospite) + " - " + self.risultato_finale()
     return string

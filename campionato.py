@@ -49,7 +49,7 @@ class Campionato:
     if new_sheet:
       self.counter = n
       g.data_inizio = data
-      g.data_fine = (2017, 12, 31, 0, 0, 0)
+
       #setta nuova giornata iniziata
     elif (n-self.counter) == 1:
       #setta fine giornata di counter e nuova giornata di n

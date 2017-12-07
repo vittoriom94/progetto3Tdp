@@ -9,7 +9,7 @@ class Giornata:
     self.n_giornata = n_giornata
     self.partite = ProbeHashMap()
     self.data_inizio = (2016, 1, 1, 0, 0, 0)
-    self.data_fine = (2016, 1, 1, 0, 0, 0)
+    self.data_fine = (2017, 12, 31, 0, 0, 0)
 
   def inserisci_partita(self, partita):
     # 0 - campionato
