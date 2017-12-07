@@ -7,10 +7,12 @@ def count_kmp(T, P):
   j = 0  # index into text
   k = 0  # index into pattern
   while j < n:
+    #print(j,k)
     if T[j] == P[k]:  # P[0:1+k] matched thus far
-
+     # print(T[j], P[j])
       if k == m - 1:  # match is complete
-
+        # invece di uscire incrementa counter, resetta k e passa al j successivo
+        #print("Match")
         counter+=1
         j+=1
         k=0
@@ -42,15 +44,30 @@ def compute_kmp_fail(P):
   return fail
 
 
-s1 = "ddabababa"
+s1 = "abababa"
 p1 = "aba"
 s2 = "rcasaddcasaddcasa"
 s3 = "aaacasabbb"
 p2 = "casa"
 s4 = "ababababaaaba"
+s5 = "casadddcasa"
+s6 = "casacasa"
+s7 = "casa"
+s8 = "abcdefg"
 
-
-print(count_kmp(s1,p1))
-print(count_kmp(s2,p2))
-print(count_kmp(s3,p2))
-print(count_kmp(s4,p1))
+print("T: "+ s1+ " P: " + p1)
+print("Occorrenze: ",count_kmp(s1,p1))
+print("T: "+ s2+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s2,p2))
+print("T: "+ s3+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s3,p2))
+print("T: "+ s4+ " P: " + p1)
+print("Occorrenze: ",count_kmp(s4,p1))
+print("T: "+ s5+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s5,p2))
+print("T: "+ s6+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s6,p2))
+print("T: "+ s7+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s7,p2))
+print("T: "+ s8+ " P: " + p2)
+print("Occorrenze: ",count_kmp(s8,p2))
