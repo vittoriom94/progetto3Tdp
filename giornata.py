@@ -12,17 +12,6 @@ class Giornata:
     self.data_fine = (2017, 12, 31, 0, 0, 0)
 
   def inserisci_partita(self, partita):
-    # 0 - campionato
-    # 1 - giornata
-    # 2 - data
-    # 3 - home
-    # 4 - ospite
-    # 5 - fthg
-    # 6 - ftag
-    # 7 - ftr
-    # 8 - hthg
-    # 9 - htag
-    # 10 - htr
 
     p = Partita(partita[3],partita[4],partita[5],partita[6],partita[8],partita[9],partita[2],partita[1])
     self.partite[partita[3]] = p

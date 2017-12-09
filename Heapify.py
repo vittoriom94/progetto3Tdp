@@ -5,7 +5,7 @@ class Heapify(HeapPriorityQueue):
   def __init__(self, contents=()):
     """Crea una nuova PriorityQueue con tuT gli elemenK contents. """
     super().__init__()
-    self._data = [self._Item(k, v) for k, v in contents]
+    self._data = [self._Item(contents[k], k) for k in contents]
     if len(self._data) > 1:
       self._heapify()
 

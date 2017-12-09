@@ -12,17 +12,6 @@ class Campionato:
     self.counter = 0
 
   def inserisci_partita(self, dati_riga, new_sheet=False):
-    # 0 - campionato
-    # 1 - giornata
-    # 2 - data
-    # 3 - home
-    # 4 - ospite
-    # 5 - fthg
-    # 6 - ftag
-    # 7 - ftr
-    # 8 - hthg
-    # 9 - htag
-    # 10 - htr
 
     if dati_riga[1] in self.giornate:
       g = self.giornate[dati_riga[1]]

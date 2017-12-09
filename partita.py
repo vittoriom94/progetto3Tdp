@@ -1,6 +1,6 @@
 
 class Partita:
-  __slots__ = "casa","ospite","gol_casa","gol_ospite","gol_casa_primotempo","gol_ospite_primotempo", "data", "campionato"
+  __slots__ = "casa","ospite","gol_casa","gol_ospite","gol_casa_primotempo","gol_ospite_primotempo", "data", "campionato", "risultato", "risultato_pt"
   def __init__(self, casa, ospite, gol_casa, gol_ospite, gol_casa_primotempo, gol_ospite_primotempo, data, campionato):
     self.casa = casa
     self.ospite = ospite
@@ -11,8 +11,10 @@ class Partita:
     self.data = data
     self.campionato = campionato
 
-  def risultato_finale(self):
-    """1 se ha vinto casa, -1 se ha vinto ospite, 0 pareggio"""
+    self.risultato = self._risultato_finale()
+    self.risultato_pt = self._risultato_primo_tempo()
+
+  def _risultato_finale(self):
     diff = self.gol_casa - self.gol_ospite
     if diff > 0:
       return "H"
@@ -21,8 +23,7 @@ class Partita:
     else:
       return "D"
 
-  def risultato_primo_tempo(self):
-    """1 se ha vinto casa, -1 se ha vinto ospite, 0 pareggio"""
+  def _risultato_primo_tempo(self):
     diff = self.gol_casa_primotempo - self.gol_ospite_primotempo
     if diff > 0:
       return "H"
@@ -32,5 +33,5 @@ class Partita:
       return "D"
 
   def __str__(self):
-    string = self.casa + " - " + self.ospite + " = " + str(self.gol_casa) + " - " + str(self.gol_ospite) + " - " + self.risultato_finale()
+    string = self.casa + " - " + self.ospite + " = " + str(self.gol_casa) + " - " + str(self.gol_ospite) + " - " + self.risultato
     return string
