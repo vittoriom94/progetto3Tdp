@@ -140,6 +140,8 @@ class Richieste:
     h = Heapify(classifica_no)
     classifica_o = list()
     for i in range(0, n):
+      if h.is_empty():
+        break
       minK,minV = h.remove_min()
       classifica_o.append(minV)
     return classifica_o
@@ -163,6 +165,8 @@ class Richieste:
     h = Heapify(classifica_no) #O n
     classifica_o = list()
     for i in range(0, n): #O klogn  k sarebbe n
+      if h.is_empty():
+        break
       minK,minV = h.remove_min()
       classifica_o.append(minV)
     return classifica_o
@@ -187,6 +191,8 @@ class Richieste:
     h = Heapify(classifica_no)
     classifica_o = list()
     for i in range(0, n):
+      if h.is_empty():
+        break
       minK,minV = h.remove_min()
       classifica_o.append(minV)
     return classifica_o
