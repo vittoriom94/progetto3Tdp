@@ -1,7 +1,7 @@
 import datetime
 
 import xlrd
-from TdP_collections.map.binary_search_tree import TreeMap
+from TdP_collections.map.avl_tree import AVLTreeMap
 from dati import DatiPartite
 from requests import Richieste
 
@@ -10,22 +10,24 @@ class Acquisizione:
   def acquisisci(self, nome):
     """ Acquisizione da file originale """
     sheets = ["E0","SC0","D1","SP1","I1","F1","N1","B1","P1","T1","G1"]
-    dim = 10
+    oksheets = ["D1","SP1","I1","F1","N1","B1","T1","G1"]
+    dim = 9
     self.dati = DatiPartite()
     book = xlrd.open_workbook(nome)
     for sheet in book.sheets():
       # itera solo sui fogli richiesti in traccia
-      if sheet.name not in sheets:
+
+      if sheet.name not in oksheets: #effettuo l'acquisizione solo con i fogli funzionanti, cambiare in sheets per testare con tutti i fogli
         continue
+
       # costruisci la lista di squadre a partire dalla colonna delle squadre, set per eliminare i duplicati
       self.elenco_squadre = list(set(sheet.col_values(2,1,sheet.nrows)))
       # inizializza lista di squadre non inserite per la prima giornata
       self.not_inserite = list(self.elenco_squadre)
-      self.elenco_rinvii = TreeMap() # collection delle squadre rinviate
+      self.elenco_rinvii = AVLTreeMap() # collection delle squadre rinviate
       cell = dim * [None]
       self.counter = 1 # giornata 1
       self.next = None # riga successiva
-      self.prev = None # riga precedente
       for i in range(1, sheet.nrows):
         for j in range(0, dim):
           cell[j] = sheet.cell(i, j).value # vettore con dati della riga i
@@ -35,11 +37,7 @@ class Acquisizione:
             next[j] = sheet.cell(i+1, j).value
           self.next = self._formatta_riga_originale(next)
         new_sheet = True if i == 1 else False # true se è la prima riga di un foglio
-        if not new_sheet: # inizializza prev, la prima riga non ne ha una precedente
-          prev = dim * [None]
-          for j in range(0, dim):
-            prev[j] = sheet.cell(i-1, j).value
-          self.prev = self._formatta_riga_originale(prev)
+
         cell = self._formatta_riga_originale(cell)
 
         rinvio = self._check_giornata(cell) # controlla la riga
@@ -73,11 +71,11 @@ class Acquisizione:
     for pos in self.elenco_rinvii.inorder(): # controlla dal meno recente al più recente
       missingKey, missingValue = pos.key(), pos.value()
       if s1 in missingValue and s2 in missingValue: # lista di squadre che non hanno giocato per quella giornata, se s1 e s2 sono nella lista allora può essere un rinvio
-        if len(missingValue) > 2: #con due o più partite rinviate, possono esserci più combinazioni
+        #if len(missingValue) > 2: #con due o più partite rinviate, possono esserci più combinazioni
           # controlla se la giornata successiva avviene a meno di due giorni di distanza,
           # in questo caso anche la successiva deve essere un rinvio, altrimenti si assume che la partita corrente sia una nuova giornata
-          if not self._check_other_match(riga, missingValue):
-            return 0
+        if not self._check_other_match(riga, missingValue):
+          return 0
         missingValue.remove(s1)
         missingValue.remove(s2)
         self.elenco_rinvii.delete(pos)
@@ -87,24 +85,13 @@ class Acquisizione:
         return missingKey
     return 0
 
-  def _is_over_two(self, riga):
-    """ Controlla se la partite corrente avviene a più di due giorni di distanza dalla precedente"""
-    data = datetime.datetime(*riga[2])
-    if self.prev is None:
-      return False
-    data2 = datetime.datetime(*self.prev[2])
-    diff = data - data2
-    if diff.days > 2:
-      return True
-    return False
 
   def _check_giornata(self, riga):
     """ Calcola a quale giornata appartiere una partita, ritorna 0 se la partita appartiene a self.counter, altrimenti
     ritorna la giornata a cui appartiene (in caso di rinvio) """
     s1,s2 = riga[3], riga[4] # squadra casa, squadra ospite
-    new = self._is_over_two(riga) # se true, allora la partita è un rinvio o una nuova giornata
     #una delle due ha già giocato, controlla prima per un rinvio e poi inserisci
-    if (s1 not in self.not_inserite or s2 not in self.not_inserite) or new:
+    if (s1 not in self.not_inserite or s2 not in self.not_inserite):
       i = self._check_rinvio(riga) # controlla se la partita può essere un rinvio, se i!=0 allora è un rinvio, altrimenti per i=0 è una nuova giornata
       if i == 0:
         # crea una lista di squadre che non hanno giocato per questa giornata, in modo da salvare i rinvii
@@ -142,15 +129,15 @@ class Acquisizione:
 
   def _formatta_riga_originale(self, dati_riga):
     """ Formatta la riga nel formato accettato dalla struttura """
-    riga = [None]*10
+    riga = [None]*9
     riga[0] = dati_riga[0] #campionato
     riga[2] = xlrd.xldate_as_tuple(dati_riga[1],0) #data
     riga[3] = dati_riga[2] #squadra 1
     riga[4] = dati_riga[3] #squadra 2
     riga[5] = int(dati_riga[4]) if dati_riga[4] is not '' else 0 # gol squadra casa
     riga[6] = int(dati_riga[5]) if dati_riga[5] is not '' else 0 # gol squadra ospite
-    riga[8] = int(dati_riga[7]) if dati_riga[7] is not '' else 0 # gol squadra casa primo tempo
-    riga[9] = int(dati_riga[8]) if dati_riga[8] is not '' else 0 # gol squadra ospite primo tempo
+    riga[7] = int(dati_riga[7]) if dati_riga[7] is not '' else 0 # gol squadra casa primo tempo
+    riga[8] = int(dati_riga[8]) if dati_riga[8] is not '' else 0 # gol squadra ospite primo tempo
     return riga
 
   def _formatta_riga_modificato(self, dati_riga):
@@ -158,8 +145,8 @@ class Acquisizione:
     dati_riga[2] = xlrd.xldate_as_tuple(dati_riga[2],0)
     dati_riga[5] = int(dati_riga[5])
     dati_riga[6] = int(dati_riga[6])
-    dati_riga[8] = int(dati_riga[8])
-    dati_riga[9] = int(dati_riga[9])
+    dati_riga[7] = int(dati_riga[8])
+    dati_riga[8] = int(dati_riga[9])
     return dati_riga
 
 if __name__ == "__main__":
@@ -180,22 +167,23 @@ if __name__ == "__main__":
   print("Esercizio due")
   g = input("inserisci giornata: ")
   c = input("inserisci campionato: ")
-  classifica,avversari = r.richiesta_due(int(g), str(c))
+  classifica = r.richiesta_due(int(g), str(c))
   string = "Squadra - Punti - Partite giocate:\n"
   for element in classifica:
-    pg = avversari[element[0]]
-    string+=element[0]+" - "+str(element[1])+" - "+str(pg)+"\n"
+    #pg = avversari[element[0]]
+    string+=element[0]+" - "+str(element[1][0])+" - "+str(element[1][1])+"\n"
   print(string)
 
 
   print("Esercizio tre")
   g = input("inserisci giornata: ")
   c = input("inserisci campionato: ")
-  classifica,avversari = r.richiesta_tre(int(g), str(c))
-  print(str(classifica))
-  print(list(avversari))
-  print(list(avversari.values()))
-
+  classifica = r.richiesta_tre(int(g), str(c))
+  string = "Squadra - Punti - Partite giocate:\n"
+  for element in classifica:
+    #pg = avversari[element[0]]
+    string+=element[0]+" - "+str(element[1][0])+" - "+str(element[1][1])+"\n"
+  print(string)
 
   print("Esercizio quattro")
   g = input("inserisci giornata: ")

@@ -8,7 +8,7 @@ from giornata import Giornata
 class DatiPartite:
   __slots__= 'campionati'
   def __init__(self):
-    self.campionati = TreeMap()
+    self.campionati = ProbeHashMap()
 
 
   def inserisci_partita(self, dati_riga, new_sheet=False):
@@ -31,7 +31,8 @@ class DatiPartite:
     file = open("log.txt", "w+")
     file.truncate()
     for campionato in self.campionati.values():
-      for giornata in campionato.giornate.values():
+      for i in range(1, len(campionato.giornate)+1):
+        giornata = campionato.giornate[i]
         for partita in giornata.partite.values():
           print(campionato.nome + " " + str(giornata.n_giornata) + ": " + str(giornata.data_inizio) + " - " + str(giornata.data_fine) + " -> " + str(partita))
           file.write(campionato.nome + " " + str(giornata.n_giornata) + ": " + str(giornata.data_inizio) + " - " + str(giornata.data_fine) + " -> " + str(partita) + "\n")

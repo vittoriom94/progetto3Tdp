@@ -13,10 +13,7 @@ class Giornata:
 
   def inserisci_partita(self, partita):
 
-    p = Partita(partita[3],partita[4],partita[5],partita[6],partita[8],partita[9],partita[2],partita[1])
+    p = Partita(partita[3],partita[4],partita[5],partita[6],partita[7],partita[8],partita[2],partita[1])
     self.partite[partita[3]] = p
     self.partite[partita[4]] = p
     return p
-
-  def get_partita(self, squadra):
-    return self.partite[squadra]

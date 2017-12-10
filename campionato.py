@@ -6,7 +6,7 @@ from giornata import Giornata
 class Campionato:
   __slots__= 'nome','giornate','counter','data_partite'
   def __init__(self,nome):
-    self.giornate = TreeMap()
+    self.giornate = ProbeHashMap()
     self.data_partite = ProbeHashMap()
     self.nome = nome
     self.counter = 0
@@ -31,9 +31,6 @@ class Campionato:
       lista_partite.append(partita)
       self.data_partite[data] = lista_partite
 
-  def get_giornata(self, n_giornata):
-    return self.giornate[n_giornata]
-
   def controllo_giornata(self,g, n, data, new_sheet):
     if new_sheet:
       self.counter = n
@@ -45,6 +42,3 @@ class Campionato:
       g.data_inizio = data
       self.giornate[self.counter].data_fine = data
       self.counter = n
-
-    elif n == self.counter:
-      pass

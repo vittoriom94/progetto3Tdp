@@ -7,12 +7,9 @@ def count_kmp(T, P):
   j = 0  # index into text
   k = 0  # index into pattern
   while j < n:
-    #print(j,k)
     if T[j] == P[k]:  # P[0:1+k] matched thus far
-     # print(T[j], P[j])
       if k == m - 1:  # match is complete
         # invece di uscire incrementa counter, resetta k e passa al j successivo
-        #print("Match")
         counter+=1
         j+=1
         k=0

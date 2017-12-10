@@ -16,11 +16,7 @@ class Richieste:
       raise Exception("Giornata inferiore a 1")
     campionato = self.dati.campionati[c]
     classifica_no = ProbeHashMap()
-    avversari = ProbeHashMap()
-    try:
-      data_finale = campionato.giornate[g].data_fine
-    except KeyError:
-      data_finale = (2017,12,31,0,0,0)
+    data_finale = campionato.giornate[g].data_fine
     for i in range(1,g+1):
       if i not in campionato.giornate:
         break
@@ -29,24 +25,18 @@ class Richieste:
         partita = giornata.partite[squadra]
         if partita.data <= data_finale:
           if squadra not in classifica_no:
-            classifica_no[squadra] = 0
-          classifica_no[squadra] = classifica_no[squadra] + self._checkrisultato_n(squadra, partita)
-          if squadra not in avversari:
-            avversari[squadra] = 0
-          avversari[squadra]+=1
-    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1],reverse=True)
-    return classifica_o,avversari
+            classifica_no[squadra] = [0,0]
+          values = classifica_no[squadra]
+          classifica_no[squadra] = [values[0] + self._checkrisultato_n(squadra, partita), values[1]+1]
+    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1][0],reverse=True)
+    return classifica_o
 
   def richiesta_tre(self,g, c):
     if g <1:
       raise Exception("Giornata inferiore a 1")
     campionato = self.dati.campionati[c]
     classifica_no = ProbeHashMap()
-    avversari = ProbeHashMap()
-    try:
-      data_finale = campionato.giornate[g].data_fine
-    except KeyError:
-      data_finale = (2017,12,31,0,0,0)
+    data_finale = campionato.giornate[g].data_fine
     for i in range(1,g+1):
       if i not in campionato.giornate:
         break
@@ -55,13 +45,11 @@ class Richieste:
         partita = giornata.partite[squadra]
         if partita.data <= data_finale:
           if squadra not in classifica_no:
-            classifica_no[squadra] = 0
-          classifica_no[squadra] = classifica_no[squadra] + self._checkrisultato_pt_n(squadra, partita)
-          if squadra not in avversari:
-            avversari[squadra] = 0
-          avversari[squadra]+=1
-    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1],reverse=True) #sorted = O(nlogn)
-    return classifica_o,avversari
+            classifica_no[squadra] = [0,0]
+          values = classifica_no[squadra]
+          classifica_no[squadra] = [values[0] + self._checkrisultato_pt_n(squadra, partita), values[1] + 1]
+    classifica_o = sorted(classifica_no.items(), key=lambda item : item[1][0],reverse=True) #sorted = O(nlogn)
+    return classifica_o
 
   def _checkrisultato_n(self,squadra, partita):
 
@@ -123,7 +111,7 @@ class Richieste:
   def richiesta_cinque(self, data):
     data = str(data).split(",")
     data = (int(data[0]), int(data[1]), int(data[2]), 0, 0, 0)
-    risultati = list()
+    risultati = set()
     for campionato in self.dati.campionati.values():
       for n_giornata in campionato.giornate:
         giornata = campionato.giornate[n_giornata]
@@ -131,10 +119,9 @@ class Richieste:
           partita = giornata.partite[squadra]
           if partita.data == data:
             risultato = campionato.nome +": "+partita.casa + " - " + partita.ospite + ": " + partita.risultato
-            risultati.append(risultato)
+            risultati.add(risultato)
     return risultati
 
-  ### stampare anche il numero di gol?
   def richiesta_sei(self,g, n):
     if g <1:
       raise Exception("Giornata inferiore a 1")
@@ -155,7 +142,7 @@ class Richieste:
     for i in range(0, n):
       minK,minV = h.remove_min()
       classifica_o.append(minV)
-    return classifica_o[0:n]
+    return classifica_o
 
   def richiesta_sette(self, g, n):
     if g < 1:
@@ -178,7 +165,7 @@ class Richieste:
     for i in range(0, n): #O klogn  k sarebbe n
       minK,minV = h.remove_min()
       classifica_o.append(minV)
-    return classifica_o[0:n]
+    return classifica_o
 
   def richiesta_otto(self, g, n):
     if g < 1:
@@ -202,17 +189,14 @@ class Richieste:
     for i in range(0, n):
       minK,minV = h.remove_min()
       classifica_o.append(minV)
-    return classifica_o[0:n]
+    return classifica_o
 
   def richiesta_nove(self,g, c):
     if g <1:
       raise Exception("Giornata inferiore a 1")
     campionato = self.dati.campionati[c]
     classifica_no = ProbeHashMap()
-    try:
-      data_finale = campionato.giornate[g].data_fine
-    except KeyError:
-      data_finale = (2017,12,31,0,0,0)
+    data_finale = campionato.giornate[g].data_fine
     for i in range(1,g+1):
       if i not in campionato.giornate:
         break
@@ -222,9 +206,10 @@ class Richieste:
         if partita.data <= data_finale:
           if squadra not in classifica_no:
             classifica_no[squadra] = [0,0,0] # [WIN, WIN in casa, WIN in trasferta]
-          r1 = 1 if self._checkrisultato_str(squadra,partita) == "Win" else 0
+          #r1 = 1 if self._checkrisultato_str(squadra,partita) == "Win" else 0
           r2 = 1 if squadra == partita.casa and partita.risultato == "H" else 0
           r3 = 1 if squadra == partita.ospite and partita.risultato == "A" else 0
+          r1 = 0 if r2+r3 == 0 else 1
           old_r = classifica_no[squadra]
           classifica_no[squadra] = [old_r[0] + r1, old_r[1] + r2, old_r[2] + r3]
     return self._check_top(classifica_no)
